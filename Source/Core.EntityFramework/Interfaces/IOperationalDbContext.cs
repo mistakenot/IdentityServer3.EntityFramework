@@ -15,9 +15,9 @@
  */
 
 using System;
-using System.Data.Entity;
 using System.Threading.Tasks;
 using IdentityServer3.EntityFramework.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServer3.EntityFramework
 {

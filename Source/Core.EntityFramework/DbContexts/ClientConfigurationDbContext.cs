@@ -13,25 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-using System.Data.Entity;
+
+using System;
+using IdentityServer3.EntityFramework.DbContexts;
 using IdentityServer3.EntityFramework.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServer3.EntityFramework
 {
     public class ClientConfigurationDbContext : BaseDbContext, IClientConfigurationDbContext
     {
-        public ClientConfigurationDbContext()
-            : this(EfConstants.ConnectionName)
-        {
-        }
-
-        public ClientConfigurationDbContext(string connectionString)
-            : base(connectionString)
-        {
-        }
-        
-        public ClientConfigurationDbContext(string connectionString, string schema)
-            : base(connectionString, schema)
+        public ClientConfigurationDbContext(string connectionString, string schema = null) 
+            : base(DefaultConfigurations.UseSqlServer(connectionString), schema)
         {
         }
 
@@ -42,7 +35,7 @@ namespace IdentityServer3.EntityFramework
 
         public DbSet<Client> Clients { get; set; }
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ConfigureClients(Schema);

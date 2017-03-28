@@ -17,10 +17,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Entity;
 using System.Threading.Tasks;
 using IdentityServer3.EntityFramework.Entities;
 using IdentityServer3.Core.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServer3.EntityFramework
 {

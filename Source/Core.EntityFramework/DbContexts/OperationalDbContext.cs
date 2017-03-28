@@ -13,25 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-using System.Data.Entity;
+
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using IdentityServer3.EntityFramework.DbContexts;
 using IdentityServer3.EntityFramework.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServer3.EntityFramework
 {
     public class OperationalDbContext : BaseDbContext, IOperationalDbContext
     {
-        public OperationalDbContext()
-            : this(EfConstants.ConnectionName)
-        {
-        }
-
-        public OperationalDbContext(string connectionString)
-            : base(connectionString)
-        {
-        }
-
-        public OperationalDbContext(string connectionString, string schema)
-            : base(connectionString, schema)
+        public OperationalDbContext(string connectionString, string schema = null)
+            : base(DefaultConfigurations.UseSqlServer(connectionString), schema)
         {
         }
 
@@ -44,11 +39,16 @@ namespace IdentityServer3.EntityFramework
         public DbSet<Consent> Consents { get; set; }
         public DbSet<Token> Tokens { get; set; }
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ConfigureConsents(Schema);
             modelBuilder.ConfigureTokens(Schema);
+        }
+
+        public Task<int> SaveChangesAsync()
+        {
+            return this.SaveChangesAsync(CancellationToken.None);
         }
     }
 }

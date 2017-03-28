@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using IdentityServer3.EntityFramework.DbContexts;
 using IdentityServer3.EntityFramework.Logging;
 
 namespace IdentityServer3.EntityFramework

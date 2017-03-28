@@ -15,12 +15,12 @@
  */
 
 using System;
-using System.Data.Entity;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer3.Core.Services;
 using IdentityServer3.EntityFramework.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServer3.EntityFramework
 {
@@ -116,7 +116,7 @@ namespace IdentityServer3.EntityFramework
             }
 
             
-            var results = found.Select(x=>new IdentityServer3.Core.Models.Consent{
+            var results = found.Select(x => new IdentityServer3.Core.Models.Consent{
                 Subject = x.Subject, 
                 ClientId = x.ClientId, 
                 Scopes = ParseScopes(x.Scopes) 

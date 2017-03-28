@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using IdentityServer3.Core.Models;
 
 namespace IdentityServer3.EntityFramework.Entities
@@ -30,7 +29,6 @@ namespace IdentityServer3.EntityFramework.Entities
 
         [Required]
         [StringLength(200)]
-        [Index(IsUnique=true)]
         public virtual string ClientId { get; set; }
 
         public virtual ICollection<ClientSecret> ClientSecrets { get; set; }

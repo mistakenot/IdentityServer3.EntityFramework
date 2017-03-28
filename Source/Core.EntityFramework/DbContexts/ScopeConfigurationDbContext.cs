@@ -13,25 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-using System.Data.Entity;
+
+using IdentityServer3.EntityFramework.DbContexts;
 using IdentityServer3.EntityFramework.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServer3.EntityFramework
 {
     public class ScopeConfigurationDbContext : BaseDbContext, IScopeConfigurationDbContext
     {
-        public ScopeConfigurationDbContext()
-            : this(EfConstants.ConnectionName)
-        {
-        }
-
-        public ScopeConfigurationDbContext(string connectionString)
-            : base(connectionString)
-        {
-        }
-        
-        public ScopeConfigurationDbContext(string connectionString, string schema)
-            : base(connectionString, schema)
+        public ScopeConfigurationDbContext(string connectionString, string schema = null)
+            : base(DefaultConfigurations.UseSqlServer(connectionString), schema)
         {
         }
 
@@ -42,7 +34,7 @@ namespace IdentityServer3.EntityFramework
 
         public DbSet<Scope> Scopes { get; set; }
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ConfigureScopes(Schema);

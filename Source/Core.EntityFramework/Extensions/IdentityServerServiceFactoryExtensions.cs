@@ -17,6 +17,7 @@
 using System;
 using IdentityServer3.EntityFramework;
 using IdentityServer3.Core.Services;
+using IdentityServer3.EntityFramework.DbContexts;
 
 namespace IdentityServer3.Core.Configuration
 {

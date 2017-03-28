@@ -15,11 +15,11 @@
  */
 
 using System;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer3.EntityFramework.Entities;
 using IdentityServer3.Core.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServer3.EntityFramework
 {

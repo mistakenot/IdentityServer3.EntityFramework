@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-using System.Data.Entity;
 using IdentityServer3.EntityFramework.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServer3.EntityFramework
 {

@@ -1,19 +1,22 @@
-﻿using IdentityServer3.EntityFramework;
+﻿using System;
+using IdentityServer3.EntityFramework;
 using IdentityServer3.EntityFramework.Entities;
-using System.Data.Entity;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace Core.EntityFramework.IntegrationTests
 {
-    public class ClientConfigurationDbContextTests
+    public class ClientConfigurationDbContextTests : IDisposable
     {
         private const string ConfigConnectionStringName = "Config";
 
         public ClientConfigurationDbContextTests()
         {
-            Database.SetInitializer<ClientConfigurationDbContext>(
-                new DropCreateDatabaseAlways<ClientConfigurationDbContext>());
+            using (var db = new ClientConfigurationDbContext(ConfigConnectionStringName))
+            {
+                db.Database.EnsureCreated();
+            }
         }
 
         [Fact]
@@ -32,7 +35,7 @@ namespace Core.EntityFramework.IntegrationTests
 
             using (var db = new ClientConfigurationDbContext(ConfigConnectionStringName))
             {
-                var client = db.Clients.First();
+                var client = db.Clients.Include(x => x.AllowedScopes).First();
 
                 client.AllowedScopes.Add(new ClientScope
                 {
@@ -44,7 +47,7 @@ namespace Core.EntityFramework.IntegrationTests
 
             using (var db = new ClientConfigurationDbContext(ConfigConnectionStringName))
             {
-                var client = db.Clients.First();
+                var client = db.Clients.Include(x => x.AllowedScopes).First();
                 var scope = client.AllowedScopes.First();
 
                 client.AllowedScopes.Remove(scope);
@@ -54,7 +57,7 @@ namespace Core.EntityFramework.IntegrationTests
 
             using (var db = new ClientConfigurationDbContext(ConfigConnectionStringName))
             {
-                var client = db.Clients.First();
+                var client = db.Clients.Include(x => x.AllowedScopes).First();
 
                 Assert.Equal(0, client.AllowedScopes.Count());
             }
@@ -76,7 +79,7 @@ namespace Core.EntityFramework.IntegrationTests
 
             using (var db = new ClientConfigurationDbContext(ConfigConnectionStringName))
             {
-                var client = db.Clients.First();
+                var client = db.Clients.Include(x => x.RedirectUris).First();
 
                 client.RedirectUris.Add(new ClientRedirectUri
                 {
@@ -88,7 +91,7 @@ namespace Core.EntityFramework.IntegrationTests
 
             using (var db = new ClientConfigurationDbContext(ConfigConnectionStringName))
             {
-                var client = db.Clients.First();
+                var client = db.Clients.Include(x => x.RedirectUris).First();
                 var redirectUri = client.RedirectUris.First();
 
                 client.RedirectUris.Remove(redirectUri);
@@ -98,9 +101,17 @@ namespace Core.EntityFramework.IntegrationTests
 
             using (var db = new ClientConfigurationDbContext(ConfigConnectionStringName))
             {
-                var client = db.Clients.First();
+                var client = db.Clients.Include(x => x.RedirectUris).First();
 
                 Assert.Equal(0, client.RedirectUris.Count());
+            }
+        }
+
+        public void Dispose()
+        {
+            using (var db = new ClientConfigurationDbContext(ConfigConnectionStringName))
+            {
+                db.Database.EnsureDeleted();
             }
         }
     }

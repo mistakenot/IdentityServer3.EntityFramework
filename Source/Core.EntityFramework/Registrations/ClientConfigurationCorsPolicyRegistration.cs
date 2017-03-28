@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IdentityServer3.Core.Configuration;
 using IdentityServer3.Core.Services;
+using IdentityServer3.EntityFramework.DbContexts;
 
 namespace IdentityServer3.EntityFramework
 {

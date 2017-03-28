@@ -17,9 +17,9 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Data.Entity;
-using System.Data.Entity.Core.Objects.DataClasses;
 using IdentityServer3.EntityFramework.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace IdentityServer3.EntityFramework
 {
@@ -80,43 +80,45 @@ namespace IdentityServer3.EntityFramework
         internal static void RegisterDeleteOnRemove<TChild>(this ICollection<TChild> collection, DbContext ctx)
             where TChild : class
         {
-            var entities = collection as EntityCollection<TChild>;
-            if (entities != null)
-            {
-                entities.AssociationChanged += delegate (object sender, CollectionChangeEventArgs e)
-                {
-                    if (e.Action == CollectionChangeAction.Remove)
-                    {
-                        var entity = e.Element as TChild;
-                        if (entity != null)
-                        {
-                            ctx.Entry(entity).State = EntityState.Deleted;
-                        }
-                    }
-                };
-            }
+            //var entities = collection as EntityCollection<TChild>;
+            //if (entities != null)
+            //{
+            //    entities.AssociationChanged += delegate (object sender, CollectionChangeEventArgs e)
+            //    {
+            //        if (e.Action == CollectionChangeAction.Remove)
+            //        {
+            //            var entity = e.Element as TChild;
+            //            if (entity != null)
+            //            {
+            //                ctx.Entry(entity).State = EntityState.Deleted;
+            //            }
+            //        }
+            //    };
+            //}
         }
 
-        public static void ConfigureClients(this DbModelBuilder modelBuilder, string schema)
+        public static void ConfigureClients(this ModelBuilder modelBuilder, string schema)
         {
             modelBuilder.Entity<Client>()
                 .ToTable(EfConstants.TableNames.Client, schema);
             modelBuilder.Entity<Client>()
-                .HasMany(x => x.ClientSecrets).WithRequired(x => x.Client).WillCascadeOnDelete();
+                .HasMany(x => x.ClientSecrets).WithOne(x => x.Client).IsRequired().OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Client>()
-                .HasMany(x => x.RedirectUris).WithRequired(x => x.Client).WillCascadeOnDelete();
+                .HasMany(x => x.RedirectUris).WithOne(x => x.Client).IsRequired().OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Client>()
-                .HasMany(x => x.PostLogoutRedirectUris).WithRequired(x => x.Client).WillCascadeOnDelete();
+                .HasMany(x => x.PostLogoutRedirectUris).WithOne(x => x.Client).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Client>()
-                .HasMany(x => x.AllowedScopes).WithRequired(x => x.Client).WillCascadeOnDelete();
+                .HasMany(x => x.AllowedScopes).WithOne(x => x.Client).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Client>()
-                .HasMany(x => x.IdentityProviderRestrictions).WithRequired(x => x.Client).WillCascadeOnDelete();
+                .HasMany(x => x.IdentityProviderRestrictions).WithOne(x => x.Client).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Client>()
-                .HasMany(x => x.Claims).WithRequired(x => x.Client).WillCascadeOnDelete();
+                .HasMany(x => x.Claims).WithOne(x => x.Client).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Client>()
-                .HasMany(x => x.AllowedCustomGrantTypes).WithRequired(x => x.Client).WillCascadeOnDelete();
+                .HasMany(x => x.AllowedCustomGrantTypes).WithOne(x => x.Client).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Client>()
-                .HasMany(x => x.AllowedCorsOrigins).WithRequired(x => x.Client).WillCascadeOnDelete();
+                .HasMany(x => x.AllowedCorsOrigins).WithOne(x => x.Client).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Client>()
+                .HasIndex(x => x.ClientId).IsUnique();
 
             modelBuilder.Entity<ClientSecret>().ToTable(EfConstants.TableNames.ClientSecret, schema);
             modelBuilder.Entity<ClientRedirectUri>().ToTable(EfConstants.TableNames.ClientRedirectUri, schema);
@@ -128,23 +130,23 @@ namespace IdentityServer3.EntityFramework
             modelBuilder.Entity<ClientCorsOrigin>().ToTable(EfConstants.TableNames.ClientCorsOrigin, schema);
         }
 
-        public static void ConfigureConsents(this DbModelBuilder modelBuilder, string schema)
+        public static void ConfigureConsents(this ModelBuilder modelBuilder, string schema)
         {
             modelBuilder.Entity<Consent>().ToTable(EfConstants.TableNames.Consent, schema);
         }
 
-        public static void ConfigureTokens(this DbModelBuilder modelBuilder, string schema)
+        public static void ConfigureTokens(this ModelBuilder modelBuilder, string schema)
         {
             modelBuilder.Entity<Token>().ToTable(EfConstants.TableNames.Token, schema);
         }
-        public static void ConfigureScopes(this DbModelBuilder modelBuilder, string schema)
+        public static void ConfigureScopes(this ModelBuilder modelBuilder, string schema)
         {
             modelBuilder.Entity<Scope>().ToTable(EfConstants.TableNames.Scope, schema);
 
             modelBuilder.Entity<Scope>()
-                .HasMany(x => x.ScopeClaims).WithRequired(x => x.Scope).WillCascadeOnDelete();
+                .HasMany(x => x.ScopeClaims).WithOne(x => x.Scope).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Scope>()
-                .HasMany(x => x.ScopeSecrets).WithRequired(x => x.Scope).WillCascadeOnDelete();
+                .HasMany(x => x.ScopeSecrets).WithOne(x => x.Scope).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ScopeClaim>().ToTable(EfConstants.TableNames.ScopeClaim, schema);
             modelBuilder.Entity<ScopeSecret>().ToTable(EfConstants.TableNames.ScopeSecrets, schema);
