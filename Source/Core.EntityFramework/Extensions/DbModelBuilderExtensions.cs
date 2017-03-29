@@ -80,21 +80,7 @@ namespace IdentityServer3.EntityFramework
         internal static void RegisterDeleteOnRemove<TChild>(this ICollection<TChild> collection, DbContext ctx)
             where TChild : class
         {
-            //var entities = collection as EntityCollection<TChild>;
-            //if (entities != null)
-            //{
-            //    entities.AssociationChanged += delegate (object sender, CollectionChangeEventArgs e)
-            //    {
-            //        if (e.Action == CollectionChangeAction.Remove)
-            //        {
-            //            var entity = e.Element as TChild;
-            //            if (entity != null)
-            //            {
-            //                ctx.Entry(entity).State = EntityState.Deleted;
-            //            }
-            //        }
-            //    };
-            //}
+            // empty
         }
 
         public static void ConfigureClients(this ModelBuilder modelBuilder, string schema)

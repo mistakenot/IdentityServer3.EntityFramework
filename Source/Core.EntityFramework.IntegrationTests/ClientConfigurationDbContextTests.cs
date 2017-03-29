@@ -15,6 +15,7 @@ namespace Core.EntityFramework.IntegrationTests
         {
             using (var db = new ClientConfigurationDbContext(ConfigConnectionStringName))
             {
+                db.Database.EnsureDeleted();
                 db.Database.EnsureCreated();
             }
         }
